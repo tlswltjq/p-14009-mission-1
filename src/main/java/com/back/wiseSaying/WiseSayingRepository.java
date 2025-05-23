@@ -45,6 +45,10 @@ public class WiseSayingRepository {
         System.out.println("data.json 파일의 내용이 갱신되었습니다.");
     }
 
+    public Integer saveLastId() {
+        return saveLastId(0);
+    }
+
     public Integer saveLastId(Integer lastId) {
         Path filePath = Paths.get(dbPath, "lastId.txt");
 
@@ -60,7 +64,7 @@ public class WiseSayingRepository {
             try {
                 Files.createDirectories(filePath.getParent());
                 Files.writeString(filePath, lastId + "");
-                return 0;
+                return lastId;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -80,7 +84,10 @@ public class WiseSayingRepository {
     public List<WiseSaying> findAll() {
         try (Stream<Path> stream = Files.list(Paths.get(dbPath))) {
             return stream
-                    .filter(file -> file.toString().endsWith(".json"))
+                    .filter(file -> {
+                        String fileName = file.getFileName().toString();
+                        return fileName.matches("\\d+\\.json");
+                    })
                     .map(file -> {
                         try {
                             String jsonContent = Files.readString(file);

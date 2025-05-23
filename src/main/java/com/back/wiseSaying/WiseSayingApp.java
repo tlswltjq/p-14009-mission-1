@@ -7,7 +7,6 @@ public class WiseSayingApp {
     private final WiseSayingController controller = new WiseSayingController(scanner);
 
     public void start() {
-        controller.sayHello();
         while (true) {
             System.out.print("명령) ");
             String cmd;

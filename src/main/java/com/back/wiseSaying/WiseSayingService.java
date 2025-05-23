@@ -1,10 +1,13 @@
 package com.back.wiseSaying;
 
 public class WiseSayingService {
-    private final String appRoot = "/Users/jiseopshin/DEV/dev_course_WiseSaying/src/main/resources";
+    private final String appRoot = "./src/main/resources";
     private final WiseSayingRepository repository = new WiseSayingRepository(appRoot);
     private Integer lastId;
 
+    public WiseSayingService(Integer lastId) {
+        this.lastId = lastId;
+    }
 
     public WiseSaying registerWiseSaying(String wiseSayingContent, String author) {
         WiseSaying wiseSaying = createWiseSaying(wiseSayingContent, author);
@@ -40,9 +43,10 @@ public class WiseSayingService {
         return repository.save(new WiseSaying(++lastId, wiseSayingContent, author));
     }
 
-    public void initLastId() {
-        lastId = repository.saveLastId(lastId);
+    public Integer initLastId() {
+        return repository.saveLastId(lastId);
     }
+
     public WiseSaying findById(int id) {
         return repository.findById(id);
     }

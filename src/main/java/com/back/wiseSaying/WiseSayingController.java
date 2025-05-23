@@ -3,15 +3,18 @@ package com.back.wiseSaying;
 import java.util.Scanner;
 
 public class WiseSayingController {
-    private final WiseSayingService service = new WiseSayingService();
+    private Integer lastId;
     private final Scanner scanner;
+    private final WiseSayingService service = new WiseSayingService(this.lastId);
+
 
     public WiseSayingController(Scanner scanner) {
         this.scanner = scanner;
+        sayHello();
     }
 
     public void sayHello() {
-        service.initLastId();
+        this.lastId = service.initLastId();
         System.out.println("== 명언 앱 ==");
     }
 
@@ -54,6 +57,7 @@ public class WiseSayingController {
                 service.buildWiseSaying();
                 break;
             case "종료":
+                service.initLastId();
                 service.exit();
                 break;
 //            default:
