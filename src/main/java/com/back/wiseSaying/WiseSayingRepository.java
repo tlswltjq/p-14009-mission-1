@@ -4,9 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class WiseSayingRepository {
@@ -107,8 +106,8 @@ public class WiseSayingRepository {
                             throw new RuntimeException(e);
                         }
                     })
-//                    .toList();//toList는 불변 객체를 반환
-                    .collect(Collectors.toCollection(ArrayList::new));
+                    .sorted(Comparator.comparing(WiseSaying::getId).reversed())
+                    .toList();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

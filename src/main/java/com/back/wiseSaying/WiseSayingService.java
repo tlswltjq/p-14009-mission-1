@@ -1,8 +1,5 @@
 package com.back.wiseSaying;
 
-import java.util.Collections;
-import java.util.List;
-
 public class WiseSayingService {
     private final String appRoot = "./src/main/resources";
     private final WiseSayingRepository repository = new WiseSayingRepository(appRoot);
@@ -17,9 +14,7 @@ public class WiseSayingService {
     public void showWiseSayingList() {
         System.out.println("번호 / 작가 / 명언");
         System.out.println("-----------------------------");
-        List<WiseSaying> wiseSayingList = repository.findAll();
-        Collections.reverse(wiseSayingList);
-        wiseSayingList.forEach(System.out::println);
+        repository.findAll().forEach(System.out::println);
     }
 
     public void deleteWiseSaying(Integer id) {
