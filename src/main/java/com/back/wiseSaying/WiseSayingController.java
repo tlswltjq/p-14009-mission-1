@@ -3,10 +3,8 @@ package com.back.wiseSaying;
 import java.util.Scanner;
 
 public class WiseSayingController {
-    private Integer lastId;
     private final Scanner scanner;
-    private final WiseSayingService service = new WiseSayingService(this.lastId);
-
+    private final WiseSayingService service = new WiseSayingService();
 
     public WiseSayingController(Scanner scanner) {
         this.scanner = scanner;
@@ -14,7 +12,6 @@ public class WiseSayingController {
     }
 
     public void sayHello() {
-        this.lastId = service.initLastId();
         System.out.println("== 명언 앱 ==");
     }
 
@@ -42,22 +39,25 @@ public class WiseSayingController {
                 System.out.print("?id = ");
                 id = Integer.parseInt(scanner.nextLine().trim());
                 WiseSaying wiseSaying = service.findById(id);
+                if (wiseSaying != null) {
 
-                System.out.println("명언(기존) : " + wiseSaying.getContent());
-                System.out.print("명언 : ");
-                content = scanner.nextLine().trim();
+                    System.out.println("명언(기존) : " + wiseSaying.getContent());
+                    System.out.print("명언 : ");
+                    content = scanner.nextLine().trim();
 
-                System.out.println("작가(기존) : " + wiseSaying.getAuthor());
-                System.out.print("작가 : ");
-                author = scanner.nextLine().trim();
+                    System.out.println("작가(기존) : " + wiseSaying.getAuthor());
+                    System.out.print("작가 : ");
+                    author = scanner.nextLine().trim();
 
-                service.updateWiseSaying(wiseSaying.getId(), content, author);
+                    service.updateWiseSaying(wiseSaying.getId(), content, author);
+                } else {
+                    System.out.printf("%d번 명언은 존재하지 않습니다.\n", id);
+                }
                 break;
             case "빌드":
                 service.buildWiseSaying();
                 break;
             case "종료":
-                service.initLastId();
                 service.exit();
                 break;
 //            default:

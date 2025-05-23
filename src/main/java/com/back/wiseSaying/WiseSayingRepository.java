@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class WiseSayingRepository {
@@ -45,8 +47,18 @@ public class WiseSayingRepository {
         System.out.println("data.json 파일의 내용이 갱신되었습니다.");
     }
 
-    public Integer saveLastId() {
-        return saveLastId(0);
+    public Integer getLastId() {
+        Path filePath = Paths.get(dbPath, "lastId.txt");
+
+        if (!Files.exists(filePath)) {
+            return saveLastId(0);
+        } else {
+            try {
+                return Integer.parseInt(Files.readString(filePath));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public Integer saveLastId(Integer lastId) {
@@ -76,9 +88,8 @@ public class WiseSayingRepository {
             String content = Files.readString(Paths.get(dbPath, id + ".json"));
             return WiseSaying.fromJson(content);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return null;
         }
-
     }
 
     public List<WiseSaying> findAll() {
@@ -96,7 +107,8 @@ public class WiseSayingRepository {
                             throw new RuntimeException(e);
                         }
                     })
-                    .toList();
+//                    .toList();//toList는 불변 객체를 반환
+                    .collect(Collectors.toCollection(ArrayList::new));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -117,7 +129,7 @@ public class WiseSayingRepository {
 
     public String deleteById(Integer id) {
         WiseSaying wiseSaying = findById(id);
-        return delete(wiseSaying);
+        return wiseSaying != null ? delete(wiseSaying) : id + "번 명언은 존재하지 않습니다.";
     }
 
     public String deleteAll() {

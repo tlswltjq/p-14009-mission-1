@@ -1,13 +1,12 @@
 package com.back.wiseSaying;
 
+import java.util.Collections;
+import java.util.List;
+
 public class WiseSayingService {
     private final String appRoot = "./src/main/resources";
     private final WiseSayingRepository repository = new WiseSayingRepository(appRoot);
-    private Integer lastId;
 
-    public WiseSayingService(Integer lastId) {
-        this.lastId = lastId;
-    }
 
     public WiseSaying registerWiseSaying(String wiseSayingContent, String author) {
         WiseSaying wiseSaying = createWiseSaying(wiseSayingContent, author);
@@ -18,17 +17,19 @@ public class WiseSayingService {
     public void showWiseSayingList() {
         System.out.println("번호 / 작가 / 명언");
         System.out.println("-----------------------------");
-        repository.findAll().forEach(System.out::println);
+        List<WiseSaying> wiseSayingList = repository.findAll();
+        Collections.reverse(wiseSayingList);
+        wiseSayingList.forEach(System.out::println);
     }
 
     public void deleteWiseSaying(Integer id) {
         System.out.println(repository.deleteById(id));
     }
 
-    public WiseSaying updateWiseSaying(int id, String newContent, String newAuthor) {
+    public void updateWiseSaying(int id, String newContent, String newAuthor) {
         WiseSaying wiseSaying = repository.findById(id);
         WiseSaying updated = wiseSaying.update(newContent, newAuthor);
-        return repository.update(updated);
+        repository.update(updated);
     }
 
     public void buildWiseSaying() {
@@ -40,11 +41,10 @@ public class WiseSayingService {
     }
 
     private WiseSaying createWiseSaying(String wiseSayingContent, String author) {
-        return repository.save(new WiseSaying(++lastId, wiseSayingContent, author));
-    }
-
-    public Integer initLastId() {
-        return repository.saveLastId(lastId);
+        Integer lastId = repository.getLastId();
+        WiseSaying wiseSaying = repository.save(new WiseSaying(++lastId, wiseSayingContent, author));
+        repository.saveLastId(lastId);
+        return wiseSaying;
     }
 
     public WiseSaying findById(int id) {
